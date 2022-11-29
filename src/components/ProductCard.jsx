@@ -92,7 +92,7 @@ const ProductCard = (props) => {
 
           <OverlayTrigger
             trigger='click'
-            placement='right'
+            placement='top'
             overlay={popover}
           >
             <Button
