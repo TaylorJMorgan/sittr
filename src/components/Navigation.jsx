@@ -9,26 +9,9 @@ function Navigation(props) {
   const [user, setUser] = useState('');
   const [isLoggedIn, setLoggedIn] = useState(false);
   const location = useLocation();
+  console.log(setLoggedIn, setUser);
 
-  useEffect(() => {
-    async function getData(url = '/get-email') {
-      const response = await fetch(url);
-      return response.text();
-    }
-
-    async function getEmail() {
-      const data = await getData();
-      setUser(data);
-    }
-
-    getEmail();
-
-    if (user !== 'Not signed in') {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  }, [location, user]);
+  useEffect(() => {}, [location, user]);
 
   return (
     <Navbar

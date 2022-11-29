@@ -1,65 +1,78 @@
+import { useDispatch } from 'react-redux';
+
+import { cartActions } from '../store/cart';
 import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import { useState } from 'react';
 
 function CartItem(props) {
+  const dispatch = useDispatch();
 
-    const [error, setError] = useState();
-    const [isDeleted, setDeleted] = useState(false);
+  const { name, quantity, total, price, id, image } = props.item;
 
-    // Currency formatting regex from Stack Overflow https://stackoverflow.com/questions/55556221/how-do-you-format-a-number-to-currency-when-using-react-native-expo
-    function currencyFormat(num) {
-        return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-    }
+  const removeItemHandler = () => {
+    dispatch(cartActions.removeItemFromCart(id));
+  };
 
-    return (
-        <div>
-            {!isDeleted &&
-                <Row key={props.id} className='border-top align-items-center py-3 mx-3'>
-                    <Col md={3}>
-                        <Image thumbnail className='cart-img' src={require('../images/' + props.image)} alt={props.image} />
-                    </Col>
-                    <Col md={3}>
-                        <h4>{props.name}</h4>
-                    </Col>
-                    <Col md={3}>
-                        <h4>{currencyFormat(props.price)} CAD</h4>
-                    </Col>
-                    <Col md={3}>
-                        <Button variant='secondary'
-                            onClick={async () => {
-                                const id = props.id;
-                                const product = { id };
-                                const response = await fetch('/remove-product', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify(product)
-                                });
+  const addItemHandler = () => {
+    dispatch(
+      cartActions.addItemToCart({
+        id,
+        name,
+        price,
+        image,
+      })
+    );
+  };
 
-                                if (response.ok) {
-                                    setDeleted(true);
-                                    props.stateChanger(props.id);
-                                    return 'TODO';
-                                }
+  // Currency formatting regex from Stack Overflow https://stackoverflow.com/questions/55556221/how-do-you-format-a-number-to-currency-when-using-react-native-expo
+  const currencyFormat = (num) => {
+    return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  };
 
-                                if (response.status === 400) {
-                                    const errorText = async () => {
-                                        const result = await response.text();
-                                        setError(result);
-                                        console.log(error);
-                                    }
-                                    errorText();
-                                }
-                            }}>Remove from cart</Button>
-                    </Col>
-                </Row>
-            }
-        </div>
-    )
+  return (
+    <div>
+      <Row
+        key={id}
+        className='border-top align-items-center py-3 mx-3'
+      >
+        <Col md={2}>
+          <Image
+            thumbnail
+            className='cart-img'
+            src={require('../images/' + image)}
+            alt={image}
+          />
+        </Col>
+        <Col md={2}>
+          <h4>{name}</h4>
+        </Col>
+        <Col md={2}>
+          <h4>{quantity}x</h4>
+        </Col>
+        <Col md={2}>
+          <h4>{currencyFormat(total)}</h4>
+          <h6>({currencyFormat(price)}/unit)</h6>
+        </Col>
+        <Col md={4}>
+          <Button
+            variant='secondary'
+            className='me-3'
+            onClick={removeItemHandler}
+          >
+            -
+          </Button>
+          <Button
+            variant='secondary'
+            onClick={addItemHandler}
+          >
+            +
+          </Button>
+        </Col>
+      </Row>
+    </div>
+  );
 }
 
 export default CartItem;
