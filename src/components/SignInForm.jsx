@@ -14,31 +14,48 @@ function SignInForm(props) {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [error, setError] = useState();
-  const [errorCode, setErrorCode] = useState();
   const auth = props.auth;
   const navigate = useNavigate();
 
   const registerHandler = () => {
+    if (password !== passwordConfirm) {
+      setError('Passwords do not match.');
+      return;
+    }
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        props.user = userCredential.user;
+        auth.user = userCredential.user;
         navigate('/loggedin');
       })
       .catch((error) => {
-        setErrorCode(error.code);
-        setError(error.message);
+        if (error.code === 'auth/internal-error') {
+          setError('Something went wrong, please try again.');
+        }
+        if (error.code === 'auth/invalid-email') {
+          setError('Invalid email.');
+        }
+        if (error.code === 'auth/weak-password') {
+          setError('Weak password, please use at least 6 characters.');
+        }
+        if (error.code === 'auth/email-already-in-use') {
+          setError('That email is already in use.');
+        }
       });
   };
 
   const signInHandler = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        props.user = userCredential.user;
+        auth.user = userCredential.user;
         navigate('/loggedin');
       })
       .catch((error) => {
-        setErrorCode(error.code);
-        setError(error.message);
+        if (error.code === 'auth/wrong-password') {
+          setError('Incorrect password.');
+        }
+        if (error.code === 'auth/invalid-email') {
+          setError('Invalid email.');
+        }
       });
   };
 
@@ -54,7 +71,7 @@ function SignInForm(props) {
         <h1 className='mb-3'>{props.title}</h1>
 
         <p className='text-danger'>{error}</p>
-        <p className='text-danger'>{errorCode}</p>
+        {/* <p className='text-danger'>{errorCode}</p> */}
 
         <FloatingLabel
           controlId='floatingInput'

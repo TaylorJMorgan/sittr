@@ -3,13 +3,13 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link, useLocation } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 function Navigation(props) {
-  const [user, setUser] = useState('');
-  const [isLoggedIn, setLoggedIn] = useState(false);
   const location = useLocation();
-  console.log(setLoggedIn, setUser);
+
+  const isLoggedIn = props.isLoggedIn;
+  const user = props.currentUser;
 
   useEffect(() => {}, [location, user]);
 
@@ -68,7 +68,7 @@ function Navigation(props) {
                 as={Link}
                 to='logout'
               >
-                {user + ' (Sign out)'}
+                {user.email + ' (Sign out)'}
               </Nav.Link>
             )}
 

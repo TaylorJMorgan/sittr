@@ -1,11 +1,12 @@
 import { useSelector } from 'react-redux';
 
+import { Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import CartItem from '../components/CartItem';
+import { Fragment } from 'react';
 
 const Cart = (props) => {
   const cartItems = useSelector((state) => state.cart.items);
-  console.log(cartItems);
 
   return (
     <Container className='text-center bg-light py-3 mb-3 rounded'>
@@ -24,7 +25,15 @@ const Cart = (props) => {
         />
       ))}
       {cartItems.length === 0 && (
-        <p>There is currently nothing in your cart.</p>
+        <Fragment>
+          <p>There is currently nothing in your cart.</p>
+          <Link
+            to='/products'
+            className='text-muted'
+          >
+            Start shopping
+          </Link>
+        </Fragment>
       )}
     </Container>
   );
