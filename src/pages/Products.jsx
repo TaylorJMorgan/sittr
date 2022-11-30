@@ -3,7 +3,7 @@ import Row from 'react-bootstrap/Row';
 import ProductCard from '../components/ProductCard';
 import Container from 'react-bootstrap/Container';
 
-function Products() {
+function Products(props) {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [httpError, setHttpError] = useState();
@@ -50,6 +50,7 @@ function Products() {
       description={product.description}
       price={product.price}
       image={product.image}
+      isLoggedIn={props.isLoggedIn}
     />
   ));
 

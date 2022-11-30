@@ -13,7 +13,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 const ProductCard = (props) => {
   const dispatch = useDispatch();
 
-  const { name, price, description, id, image } = props;
+  const { name, price, description, id, image, isLoggedIn } = props;
 
   const [show, setShow] = useState(false);
   const [popoverText, setPopoverText] = useState('');
@@ -34,15 +34,19 @@ const ProductCard = (props) => {
 
   const addToCartHandler = () => {
     try {
-      dispatch(
-        cartActions.addItemToCart({
-          id,
-          name,
-          price,
-          image,
-        })
-      );
-      setPopoverText('Added to cart!');
+      if (isLoggedIn) {
+        dispatch(
+          cartActions.addItemToCart({
+            id,
+            name,
+            price,
+            image,
+          })
+        );
+        setPopoverText('Added to cart!');
+      } else {
+        setPopoverText('Please sign in to add items to cart.');
+      }
     } catch (error) {
       setPopoverText(`Something went wrong! Error: ${error}`);
     }

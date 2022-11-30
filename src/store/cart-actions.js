@@ -1,11 +1,10 @@
-import { uiActions } from './ui';
 import { cartActions } from './cart';
 
-export const fetchCartData = () => {
+export const fetchCartData = (uid) => {
   return async (dispatch) => {
     const fetchData = async () => {
       const response = await fetch(
-        'https://react-http-e1738-default-rtdb.firebaseio.com/cart.json'
+        `https://sittr-cb344-default-rtdb.firebaseio.com/users/${uid}/cart.json`
       );
 
       if (!response.ok) {
@@ -26,30 +25,16 @@ export const fetchCartData = () => {
         })
       );
     } catch (error) {
-      dispatch(
-        uiActions.showNotification({
-          status: 'error',
-          title: 'Error!',
-          message: 'Fetching cart data failed!',
-        })
-      );
+      console.log('Oops, there was an error replacing cart');
     }
   };
 };
 
-export const sendCartData = (cart) => {
+export const sendCartData = (cart, uid) => {
   return async (dispatch) => {
-    dispatch(
-      uiActions.showNotification({
-        status: 'pending',
-        title: 'Sending...',
-        message: 'Sending cart data!',
-      })
-    );
-
     const sendRequest = async () => {
       const response = await fetch(
-        'https://react-http-e1738-default-rtdb.firebaseio.com/cart.json',
+        `https://sittr-cb344-default-rtdb.firebaseio.com/users/${uid}/cart.json`,
         {
           method: 'PUT',
           body: JSON.stringify({
@@ -66,22 +51,8 @@ export const sendCartData = (cart) => {
 
     try {
       await sendRequest();
-
-      dispatch(
-        uiActions.showNotification({
-          status: 'success',
-          title: 'Success!',
-          message: 'Sent cart data successfully!',
-        })
-      );
     } catch (error) {
-      dispatch(
-        uiActions.showNotification({
-          status: 'error',
-          title: 'Error!',
-          message: 'Sending cart data failed!',
-        })
-      );
+      console.log('Oops, there was an error with sending the request');
     }
   };
 };
